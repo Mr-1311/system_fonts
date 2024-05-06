@@ -1,5 +1,7 @@
 library system_fonts;
 
+export 'widget.dart';
+
 import 'dart:io';
 
 import 'package:flutter/services.dart';
@@ -51,7 +53,7 @@ class SystemFonts {
   /// Returns:
   ///   A list of strings representing the paths of the font files in the system.
   List<String> getFontPaths() {
-    if (_fontPaths.isNotEmpty) {
+    if (_fontPaths.isEmpty) {
       final paths = _fontDirectories;
       paths.addAll(_additionalDirectories);
       final List<FileSystemEntity> fontFilePaths = [];
