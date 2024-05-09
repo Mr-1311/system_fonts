@@ -43,7 +43,7 @@ class _SystemFontSelectorState extends State<SystemFontSelector> {
       });
     }
     if (widget.initial != null) {
-      SystemFonts().getFont(widget.initial!);
+      SystemFonts().loadFont(widget.initial!);
     }
   }
 

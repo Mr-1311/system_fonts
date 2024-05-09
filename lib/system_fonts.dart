@@ -82,7 +82,7 @@ class SystemFonts {
   /// Checks if the font is available in the system, if yes, loads the font and returns the font name, else returns null
   /// Once the font is loaded, it can be used in any `TextStyle` widget in anywhere in the app.
   /// All loaded fonts will be cached and will be loaded only once so this method can be called to get the font name every time.
-  Future<String?> getFont(String fontName) async {
+  Future<String?> loadFont(String fontName) async {
     if (_loadedFonts.contains(fontName)) {
       return fontName;
     }
@@ -104,7 +104,7 @@ class SystemFonts {
   Future<List<String>> loadAllFonts() async {
     List<String> loadedFonts = [];
     for (final font in getFontList()) {
-      loadedFonts.add((await getFont(font))!);
+      loadedFonts.add((await loadFont(font))!);
     }
     return loadedFonts;
   }
@@ -127,7 +127,7 @@ class SystemFonts {
 
     _fontMap[p.basenameWithoutExtension(path)] = path;
 
-    return getFont(p.basenameWithoutExtension(path));
+    return loadFont(p.basenameWithoutExtension(path));
   }
 
   /// Sets the additional font directory to load fonts from.
