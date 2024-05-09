@@ -23,7 +23,6 @@ class _MainAppState extends State<MainApp> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SystemFontSelector(
-                isFontPreviewEnabled: true,
                 onFontSelected: (p0) => setState(() {
                   selectedFont = p0;
                 }),

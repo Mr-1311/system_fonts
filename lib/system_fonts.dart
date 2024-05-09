@@ -19,20 +19,11 @@ class SystemFonts {
     _fontDirectories.addAll(_getFontDirectories());
   }
 
-  final List<String> _additionalDirectories = [];
   final List<String> _fontDirectories = [];
 
   final List<String> _fontPaths = [];
   final Map<String, String> _fontMap = {};
   final List<String> _loadedFonts = [];
-
-  void addAdditionalDirectories(List<String> path) {
-    _additionalDirectories.addAll(path);
-  }
-
-  void clearAdditionalDirectories() {
-    _additionalDirectories.clear();
-  }
 
   List<String> _getFontDirectories() {
     if (Platform.isWindows) {
@@ -55,7 +46,6 @@ class SystemFonts {
   List<String> getFontPaths() {
     if (_fontPaths.isEmpty) {
       final paths = _fontDirectories;
-      paths.addAll(_additionalDirectories);
       final List<FileSystemEntity> fontFilePaths = [];
 
       for (final path in paths) {
@@ -117,6 +107,41 @@ class SystemFonts {
       loadedFonts.add((await getFont(font))!);
     }
     return loadedFonts;
+  }
+
+  /// Loads the font from the full path and returns the font name.
+  /// only ttf and otf files are supported.
+  Future<String?> getFontFromPath(String path) async {
+    if (!path.endsWith('.ttf') && !path.endsWith('.otf')) {
+      return null;
+    }
+
+    if (!File(path).existsSync()) {
+      return null;
+    }
+
+    // font name already loaded
+    if (_fontMap.containsKey(p.basenameWithoutExtension(path))) {
+      return null;
+    }
+
+    _fontMap[p.basenameWithoutExtension(path)] = path;
+
+    return getFont(p.basenameWithoutExtension(path));
+  }
+
+  /// Sets the additional font directory to load fonts from.
+  void addAdditionalFontDirectory(String path) {
+    if (!Directory(path).existsSync()) {
+      return;
+    }
+
+    for (FileSystemEntity e in Directory(path).listSync()) {
+      if (!e.path.endsWith('.ttf') && !e.path.endsWith('.otf')) {
+        continue;
+      }
+      _fontMap[p.basenameWithoutExtension(e.path)] = e.path;
+    }
   }
 
   void rescan() {

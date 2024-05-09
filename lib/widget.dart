@@ -8,6 +8,7 @@ import 'package:system_fonts/system_fonts.dart';
 /// so if you somehow loaded every font once you can use font preview without any additional cost in every [SystemFontSelector] instance.
 class SystemFontSelector extends StatefulWidget {
   const SystemFontSelector({
+    this.initial,
     this.width = 200,
     this.isFontPreviewEnabled = false,
     this.textStyle,
@@ -15,6 +16,7 @@ class SystemFontSelector extends StatefulWidget {
     super.key,
   });
 
+  final String? initial;
   final double width;
   final bool isFontPreviewEnabled;
   final TextStyle? textStyle;
@@ -28,22 +30,35 @@ class SystemFontSelector extends StatefulWidget {
 class _SystemFontSelectorState extends State<SystemFontSelector> {
   String? dropdownValue;
   List<String> fontNames = [];
+  String? init;
 
   @override
   void initState() {
     super.initState();
     if (widget.isFontPreviewEnabled) {
-      SystemFonts().loadAllFonts().then((value) => setState(() {
-            fontNames = value;
-          }));
+      _loadAllFonts();
     } else {
-      fontNames = SystemFonts().getFontList();
+      setState(() {
+        fontNames = SystemFonts().getFontList();
+      });
     }
+    if (widget.initial != null) {
+      SystemFonts().getFont(widget.initial!);
+    }
+  }
+
+  _loadAllFonts() async {
+    fontNames = await SystemFonts().loadAllFonts();
+    setState(() {
+      init = widget.initial;
+      widget.onFontSelected?.call(widget.initial ?? '');
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return DropdownMenu<String>(
+      initialSelection: init,
       width: widget.width,
       onSelected: (String? value) {
         setState(() {
@@ -51,6 +66,10 @@ class _SystemFontSelectorState extends State<SystemFontSelector> {
           widget.onFontSelected?.call(value ?? '');
         });
       },
+      textStyle: widget.textStyle != null
+          ? widget.textStyle!.copyWith(fontFamily: widget.isFontPreviewEnabled ? widget.initial : null)
+          : Theme.of(context).textTheme.bodyMedium!.copyWith(
+              fontFamily: widget.isFontPreviewEnabled ? widget.initial : null, overflow: TextOverflow.ellipsis),
       dropdownMenuEntries: fontNames.map<DropdownMenuEntry<String>>((String value) {
         return DropdownMenuEntry<String>(
           value: value,
