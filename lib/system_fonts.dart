@@ -111,7 +111,7 @@ class SystemFonts {
 
   /// Loads the font from the full path and returns the font name.
   /// only ttf and otf files are supported.
-  Future<String?> getFontFromPath(String path) async {
+  Future<String?> loadFontFromPath(String path) async {
     if (!path.endsWith('.ttf') && !path.endsWith('.otf')) {
       return null;
     }
