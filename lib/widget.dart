@@ -44,6 +44,9 @@ class _SystemFontSelectorState extends State<SystemFontSelector> {
     }
     if (widget.initial != null) {
       SystemFonts().loadFont(widget.initial!);
+      setState(() {
+        init = widget.initial;
+      });
     }
   }
 

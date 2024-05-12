@@ -1,6 +1,6 @@
 name: system_fonts
 description: "A Flutter package to load system fonts on Windows, MacOS, and Linux platforms."
-version: 1.0.0
+version: 1.0.1
 homepage: "https://github.com/Mr-1311/system_fonts"
 
 environment:
